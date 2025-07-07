@@ -1,47 +1,130 @@
-*, *::after, *::before {
+*,
+*::after,
+*::before {
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: NotoSans, Arial, "Arial Unicode MS", sans-serif;
   font-size: 2.25rem;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --hue-color: 217;
+  --body-color: hsl(var(--hue-color), 24%, 94%);
 }
 
 body {
-  background-color: #f2f1ed;
-  color: #de4848;
+  background-color: var(--body-color);
+  overflow: hidden;
+}
+
+.animation {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+  min-height: 100vh;
+  opacity: 0;
+  transform: scale(0.5);
+  animation: show 0.5s ease-in-out 1s forwards;
+}
+.animation.hidden {
+  animation: hidden 0.5s ease-in-out forwards;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes hidden {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+.container {
+  display: flex;
+  gap: 0.5em;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-segment {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  align-items: center;
+}
+.container-segment.hours {
+  color: hsl(var(--hue-color), 39%, 47%);
+  display: none;
+}
+.container-segment.minutes {
+  color: hsl(var(--hue-color), 39%, 47%);
+}
+.container-segment.seconds {
+  color: hsl(var(--hue-color), 55%, 76%);
+}
+
+.segment {
+  display: flex;
+  gap: 0.1em;
 }
 
 .flip-card {
   position: relative;
   display: inline-flex;
   flex-direction: column;
-  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .2);
-  border-radius: .1em;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 0.1em;
+  perspective: 200px;
 }
 
 .top,
 .bottom,
 .flip-card .top-flip,
 .flip-card .bottom-flip {
-  height: .75em;
+  height: 0.75em;
   line-height: 1;
-  padding: .25em;
+  padding: 0.25em;
   overflow: hidden;
 }
 
 .top,
 .flip-card .top-flip {
   background-color: #f7f7f7;
-  border-top-right-radius: .1em;
-  border-top-left-radius: .1em;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-top-right-radius: 0.1em;
+  border-top-left-radius: 0.1em;
+  border-bottom: 0.1px solid #dedede;
 }
 
 .bottom,
 .flip-card .bottom-flip {
-  background-color: white;
+  background-color: #ffffff;
   display: flex;
   align-items: flex-end;
-  border-bottom-right-radius: .1em;
-  border-bottom-left-radius: .1em;
+  border-bottom-right-radius: 0.1em;
+  border-bottom-left-radius: 0.1em;
 }
 
 .flip-card .top-flip {
@@ -53,7 +136,7 @@ body {
 
 @keyframes flip-top {
   100% {
-    transform: rotateX(90deg);
+    transform: rotateX(-90deg);
   }
 }
 
@@ -72,24 +155,42 @@ body {
   }
 }
 
-.container {
+.clock {
+  --n: 5; /* control the number of dashes */
+  --d: 71deg; /* control the distance between dashes */
+  --t: 0.5em; /* control the thickness of border*/
+  --background-color: hsl(var(--hue-color), 39%, 47%);
+
+  position: relative;
+  width: 6em;
+  aspect-ratio: 1;
+  border-radius: 50%;
   display: flex;
-  gap: .5em;
   justify-content: center;
-}
-
-.container-segment {
-  display: flex;
-  flex-direction: column;
-  gap: .1em;
   align-items: center;
+  box-shadow: -6px -6px 16px hsl(var(--hue-color), 10%, 100%),
+    6px 6px 16px hsl(var(--hue-color), 30%, 86%),
+    inset 6px 6px 16px hsl(var(--hue-color), 30%, 86%),
+    inset -6px -6px 16px hsl(var(--hue-color), 10%, 100%);
 }
-
-.segment {
-  display: flex;
-  gap: .1em;
+.clock::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--background-color);
 }
-
-.segment-title {
-  font-size: 1rem;
+.clock::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: var(--t);
+  background: #dedede;
+  mask: linear-gradient(#0000 0 0) content-box intersect,
+    repeating-conic-gradient(
+      from -0.5deg,
+      #000 0 calc(360deg / var(--n) - var(--d)),
+      #0000 0 calc(360deg / var(--n))
+    );
 }
